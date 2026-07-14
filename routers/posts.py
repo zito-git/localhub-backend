@@ -139,3 +139,25 @@ def update_post(
         db.commit()
 
         return {"message": "수정 완료"}
+
+
+@router.delete("/{post_id}")
+def delete_post(
+    post_id: int,
+    password: str,
+):
+    with SessionLocal() as db:
+
+        post = db.get(Post, post_id)
+
+        if not post:
+            raise HTTPException(status_code=404, detail="게시글이 없습니다.")
+
+        # 비밀번호 확인
+        if post.password != password:
+            raise HTTPException(status_code=403, detail="비밀번호가 틀렸습니다.")
+
+        db.delete(post)
+        db.commit()
+
+        return {"message": "삭제 완료"}
