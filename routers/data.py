@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException
 
 router = APIRouter(
     prefix="/data",
-    tags=["data"],
+    tags=["데이터"],
 )
 
 FILES = {
