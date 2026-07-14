@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+
+    <title>관광 지도</title>
+
+    <!-- 카카오 지도 SDK -->
+    <script
+      type="text/javascript"
+      src="//dapi.kakao.com/v2/maps/sdk.js?appkey=코드키"
+    ></script>
+
+    <style>
+      #map {
+        width: 100%;
+        height: 700px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h2>구미 관광지 지도</h2>
+
+    <div id="map"></div>
+
+    <script>
+      // 지도 생성
+
+      const container = document.getElementById("map");
+
+      const options = {
+        center: new kakao.maps.LatLng(36.107045, 128.416777),
+
+        level: 3,
+      };
+
+      const map = new kakao.maps.Map(container, options);
+
+      // JSON 가져오기
+
+      fetch("http://localhost:8000/data/tourist")
+        .then((response) => response.json())
+
+        .then((data) => {
+          data.items.forEach((item) => {
+            // 위도, 경도 변환
+
+            const position = new kakao.maps.LatLng(
+              Number(item.mapy),
+
+              Number(item.mapx),
+            );
+
+            // 마커 생성
+
+            const marker = new kakao.maps.Marker({
+              map: map,
+
+              position: position,
+            });
+
+            // 정보창
+
+            const infoWindow = new kakao.maps.InfoWindow({
+              content: `
+
+                <div style="
+                    padding:10px;
+                    width:220px;
+                ">
+
+
+                    ${
+                      item.firstimage
+                        ? `
+                        <img 
+                        src="${item.firstimage}"
+                        style="
+                        width:200px;
+                        height:120px;
+                        object-fit:cover;
+                        "
+                        >
+                        `
+                        : ""
+                    }
+
+
+                    <h4>
+                    ${item.title}
+                    </h4>
+
+
+                    <p>
+                    ${item.addr1}
+                    </p>
+
+
+                </div>
+
+                `,
+            });
+
+            // 마커 클릭 이벤트
+
+            kakao.maps.event.addListener(
+              marker,
+
+              "click",
+
+              function () {
+                infoWindow.open(map, marker);
+              },
+            );
+          });
+        })
+
+        .catch((error) => {
+          console.log(error);
+        });
+    </script>
+  </body>
+</html>
