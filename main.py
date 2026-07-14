@@ -3,6 +3,13 @@ from routers import posts, data
 
 from fastapi import FastAPI
 
+# DB
+from database import engine
+from models import Base
+from routers import posts
+
+Base.metadata.create_all(bind=engine)
+
 app = FastAPI(
     title="localhub Gumi API",
     description="""
